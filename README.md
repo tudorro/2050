@@ -5,4 +5,4 @@
 Stick a 2048 number with 2. Easy!
 
 #### Who made this?
-I'm an 11 years old kid.
+I'm an _11_ years old kid.

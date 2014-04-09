@@ -3,10 +3,16 @@
 #include <time.h>   //For rand seed
 #include "sleep.h"  //Maybe for updates
 
+#ifdef _WIN32
+#include <windows.h>
+#endif // _WIN32
+
 int score;  //SCOOOORE
 int matrix[4][4];   //The digits
 
 void refresh(); //Shows the numbers and put a random number
+void refreshColor();
+void color(int color);
 void pause();   //Like 'system("pause")'. Also works on linux(I think...)
 int action();  //Moves the numbers
 void randomDigit(); //Puts a random digit in the matrix
@@ -59,11 +65,67 @@ void refresh(){
 
     //Printing
     for(i = 0; i < 4; i++){
-        for(k = 0; k < 4; k++)
-            printf("%d ", matrix[i][k]);
+        for(k = 0; k < 4; k++){
+            color(matrix[i][k]);
+            printf("%d     ", matrix[i][k]);
+            refreshColor();
+        }
         printf("\n");
     }
     printf("\nScore: %d\n", score);
+}
+
+void refreshColor(){
+    #ifdef _WIN32
+    SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), 0x07);
+    #else
+    printf("[0m");
+    #endif // _WIN32
+}
+
+void color(int color){
+    #ifdef _WIN32
+    HANDLE handle = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    switch(color){
+    case 0: SetConsoleTextAttribute(handle, 0xf0); break;
+    case 2: SetConsoleTextAttribute(handle, 0x70); break;
+    case 4: SetConsoleTextAttribute(handle, 0x60); break;
+    case 8: SetConsoleTextAttribute(handle, 0x40); break;
+    case 16: SetConsoleTextAttribute(handle, 0xc0); break;
+    case 32: SetConsoleTextAttribute(handle, 0xe0); break;
+    case 64: SetConsoleTextAttribute(handle, 0x50); break;
+    case 128: SetConsoleTextAttribute(handle, 0x10); break;
+    case 256: SetConsoleTextAttribute(handle, 0x30); break;
+    case 512: SetConsoleTextAttribute(handle, 0xb0); break;
+    case 1024: SetConsoleTextAttribute(handle, 0x7f); break;
+    case 2048: SetConsoleTextAttribute(handle, 0x6f); break;
+    case 2050: SetConsoleTextAttribute(handle, 0x4f); break;
+    default: system("color"); break;
+    }
+
+    #else
+    #ifdef __linux__
+    switch(color){
+    case 0: printf("[30;47m"); break;
+    case 2: printf("[47m"); break;
+    case 4: printf("[43m"); break;
+    case 8: printf("[41m"); break;
+    case 16: printf("[45m"); break;
+    case 32: printf("[45;1m"); break;
+    case 64: printf("[41;1m"); break;
+    case 128: printf("[43m"); break;
+    case 256: printf("[43;1m");break;
+    case 512: printf("[42m"); break;
+    case 1024: printf("[42;1m"); break;
+    case 2048: printf("[44m"); break;
+    case 2050: printf("[46;1m"); break;
+    default: printf("[0m"); break;
+    }
+    #endif // __linux__
+
+    #endif // _WIN32
+
 }
 
 void pause(){
